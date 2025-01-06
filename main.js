@@ -122,7 +122,7 @@ let app = {
         margin: 0.1,
         grid: 4,
         seed: utils.randomSeed(),
-        title: "Bingo",
+        title: "",
         color: utils.randomColor(),
       },
       data: [],
@@ -214,12 +214,17 @@ let app = {
 
       ctx.strokeRect(startX, startY, gridSize, gridSize);
 
+      ctx.fillStyle = this.config.color;
+
       if (this.config.title) {
-        ctx.font = `bold ${gridSize * 0.1}px serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = this.config.color;
-        ctx.fillText(this.config.title, width / 2, (height - gridSize) / 3);
+        utils.fitText(
+          ctx,
+          startX,
+          (height - gridSize) / 4,
+          gridSize,
+          (height - gridSize) / 3,
+          this.config.title
+        );
       }
 
       if (this.data.length) {
