@@ -86,6 +86,32 @@ const utils = {
       "0"
     );
   },
+  randomSeed() {
+    return (Math.random() * 2 ** 32) >>> 0;
+  },
+  splitmix32(a) {
+    return function () {
+      a |= 0;
+      a = (a + 0x9e3779b9) | 0;
+      let t = a ^ (a >>> 16);
+      t = Math.imul(t, 0x21f0aaad);
+      t = t ^ (t >>> 15);
+      t = Math.imul(t, 0x735a2d97);
+      return ((t = t ^ (t >>> 15)) >>> 0) / 4294967296;
+    };
+  },
+  shuffleSeeded(array, seed) {
+    array = array.slice();
+    const prng = utils.splitmix32(seed);
+    for (let _ = 0; _ < array.length * 4; _++) {
+      const i1 = Math.floor(prng() * array.length);
+      const i2 = Math.floor(prng() * array.length);
+      const tmp = array[i2];
+      array[i2] = array[i1];
+      array[i1] = tmp;
+    }
+    return array;
+  },
 };
 
 let app = {
@@ -95,16 +121,18 @@ let app = {
         ratio: 1,
         margin: 0.1,
         grid: 4,
-        seed: (100000000 * Math.random()).toFixed(0),
+        seed: utils.randomSeed(),
         title: "Bingo",
         color: utils.randomColor(),
       },
+      data: [],
     };
   },
   computed: {},
   watch: {
     config: {
       handler() {
+        this.makeData();
         this.draw();
       },
       deep: true,
@@ -122,6 +150,17 @@ let app = {
     newColor() {
       this.config.color = utils.randomColor();
       this.draw();
+    },
+    makeData() {
+      const targetSize =
+        parseInt(this.config.grid) * parseInt(this.config.grid);
+      if (this.data.length > targetSize) {
+        this.data = this.data.slice(0, targetSize);
+      } else if (this.data.length < targetSize) {
+        this.data = this.data.concat(
+          Array(targetSize - this.data.length).fill("")
+        );
+      }
     },
     draw() {
       const ctx = this.$refs.canvas?.getContext("2d");
@@ -156,24 +195,24 @@ let app = {
 
       ctx.lineWidth = gridSize * 0.005;
 
+      const startX = (width - gridSize) / 2;
+      const startY = (height - gridSize) * (this.config.title ? 2 / 3 : 1 / 2);
+
+      const columns = parseInt(this.config.grid);
+
       utils.strokeGrid(
         ctx,
-        (width - gridSize) / 2,
-        (height - gridSize) * (this.config.title ? 2 / 3 : 1 / 2),
+        startX,
+        startY,
         gridSize,
         gridSize,
-        parseInt(this.config.grid),
-        parseInt(this.config.grid)
+        columns,
+        columns
       );
 
       ctx.lineWidth = gridSize * 0.01;
 
-      ctx.strokeRect(
-        (width - gridSize) / 2,
-        (height - gridSize) * (this.config.title ? 2 / 3 : 1 / 2),
-        gridSize,
-        gridSize
-      );
+      ctx.strokeRect(startX, startY, gridSize, gridSize);
 
       if (this.config.title) {
         ctx.font = `bold ${gridSize * 0.1}px serif`;
@@ -181,6 +220,28 @@ let app = {
         ctx.textBaseline = "middle";
         ctx.fillStyle = this.config.color;
         ctx.fillText(this.config.title, width / 2, (height - gridSize) / 3);
+      }
+
+      if (this.data.length) {
+        const data = utils.shuffleSeeded(this.data, parseInt(this.config.seed));
+        const cellSize = gridSize / columns;
+        const cellMargin = cellSize * 0.05;
+
+        for (let index = 0; index < data.length; index++) {
+          const element = data[index];
+          if (element) {
+            const x = index % columns;
+            const y = Math.floor(index / columns);
+            utils.fitText(
+              ctx,
+              startX + x * cellSize + cellMargin,
+              startY + y * cellSize + cellMargin,
+              cellSize - cellMargin * 2,
+              cellSize - cellMargin * 2,
+              element
+            );
+          }
+        }
       }
 
       ctx.font = `bold ${gridSize * 0.02}px sans-serif`;
@@ -196,6 +257,7 @@ let app = {
   },
   mounted: function () {
     console.log("app mounted");
+    this.makeData();
     setTimeout(this.showApp);
     addEventListener("resize", this.draw);
   },

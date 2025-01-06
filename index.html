@@ -75,6 +75,13 @@
           </tr>
         </table>
         <br />
+        <h3>Data (scroll to see all):</h3>
+        <div class="data">
+          <template v-for="line, index in data" :key="index">
+            <input v-model="data[index]" @input="draw" />
+          </template>
+        </div>
+        <br />
         <small
           ><a href="https://github.com/clement-gouin" target="_blank"
             >@clement-gouin</a

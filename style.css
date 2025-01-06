@@ -184,3 +184,12 @@ textarea {
 a {
   color: inherit;
 }
+
+.data {
+  width: 100%;
+  border: 1px solid black;
+  max-height: 20rem;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
