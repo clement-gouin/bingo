@@ -3,14 +3,15 @@
 const utils = {
   strokeGrid(ctx, x, y, w, h, cols, rows) {
     ctx.beginPath();
-    for (let c = 0; c < cols + 1; c++) {
+    for (let c = 1; c < cols; c++) {
       ctx.moveTo(Math.round(x + (w / cols) * c), y);
       ctx.lineTo(Math.round(x + (w / cols) * c), y + h);
     }
-    for (let r = 0; r < rows + 1; r++) {
+    for (let r = 1; r < rows; r++) {
       ctx.moveTo(x, Math.round(y + (h / rows) * r));
       ctx.lineTo(x + w, Math.round(y + (h / rows) * r));
     }
+    ctx.rect(x, y, w, h);
     ctx.stroke();
   },
   fitText(ctx, x, y, w, h, txt) {
@@ -79,16 +80,47 @@ const utils = {
       );
     });
   },
+  randomColor() {
+    return ("#" + Math.floor(Math.random() * 16777215).toString(16)).padEnd(
+      7,
+      "0"
+    );
+  },
 };
 
 let app = {
   data() {
-    return {};
+    return {
+      config: {
+        ratio: 1,
+        margin: 0.1,
+        grid: 4,
+        seed: (100000000 * Math.random()).toFixed(0),
+        title: "Bingo",
+        color: utils.randomColor(),
+      },
+    };
   },
   computed: {},
+  watch: {
+    config: {
+      handler() {
+        this.draw();
+      },
+      deep: true,
+    },
+  },
   methods: {
     showApp() {
       document.getElementById("app").setAttribute("style", "");
+      this.draw();
+    },
+    newSeed() {
+      this.config.seed = (100000000 * Math.random()).toFixed(0);
+      this.draw();
+    },
+    newColor() {
+      this.config.color = utils.randomColor();
       this.draw();
     },
     draw() {
@@ -96,20 +128,76 @@ let app = {
       if (!ctx) {
         return;
       }
-      utils.strokeGrid(ctx, 2, 2, 398, 398, 5, 5);
-      utils.fitText(
+
+      const height = window.innerHeight;
+      const width = height / parseFloat(this.config.ratio);
+
+      this.$refs.canvas.height = height;
+      this.$refs.canvas.width = width;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "white";
+
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = this.config.color + "33";
+
+      ctx.fillRect(0, 0, width, height);
+
+      const margin = parseFloat(this.config.margin);
+      const gridSize = Math.min(
+        (1 - margin * 2) * width,
+        (1 - margin * 2) * height
+      );
+
+      ctx.lineJoin = "miter";
+
+      ctx.strokeStyle = this.config.color;
+
+      ctx.lineWidth = gridSize * 0.005;
+
+      utils.strokeGrid(
         ctx,
-        3,
-        3,
-        79,
-        79,
-        "This is a very long text, I hope this fits well"
+        (width - gridSize) / 2,
+        (height - gridSize) * (this.config.title ? 2 / 3 : 1 / 2),
+        gridSize,
+        gridSize,
+        parseInt(this.config.grid),
+        parseInt(this.config.grid)
+      );
+
+      ctx.lineWidth = gridSize * 0.01;
+
+      ctx.strokeRect(
+        (width - gridSize) / 2,
+        (height - gridSize) * (this.config.title ? 2 / 3 : 1 / 2),
+        gridSize,
+        gridSize
+      );
+
+      if (this.config.title) {
+        ctx.font = `bold ${gridSize * 0.1}px serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = this.config.color;
+        ctx.fillText(this.config.title, width / 2, (height - gridSize) / 3);
+      }
+
+      ctx.font = `bold ${gridSize * 0.02}px sans-serif`;
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
+      ctx.fillStyle = this.config.color + "44";
+      ctx.fillText(
+        "clement-gouin.github.io/bingo",
+        width * 0.99,
+        height * 0.99
       );
     },
   },
   mounted: function () {
     console.log("app mounted");
     setTimeout(this.showApp);
+    addEventListener("resize", this.draw);
   },
 };
 

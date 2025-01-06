@@ -85,7 +85,7 @@ CUSTOM STYLE
 
 :root {
   /* https://materialui.co/colors/ */
-  --hue-primary: 65.52;
+  --hue-primary: 24.42;
   --sat-primary: 20%;
   --background: hsl(var(--hue-primary), var(--sat-primary), 96.08%);
   --background-primary: hsl(var(--hue-primary), var(--sat-primary), 93.33%);
@@ -113,13 +113,37 @@ body {
 
 body {
   background-color: var(--background);
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
 }
 
 main {
   padding: 1.5rem;
-  margin: auto;
   background-color: var(--background-primary);
-  min-height: 100%;
+}
+
+canvas {
+  border: 1px dashed;
+  width: min-content;
+}
+
+.config td:first-child {
+  text-align: right;
+  padding-right: 1em;
+}
+
+.config td select,
+.config td input {
+  width: 100%;
+}
+
+.withButton {
+  display: flex;
 }
 
 table {
@@ -159,13 +183,4 @@ textarea {
 
 a {
   color: inherit;
-}
-
-@media only screen and (min-width: 768px) {
-  main {
-    max-width: 42rem;
-  }
-  table {
-    font-size: inherit;
-  }
 }

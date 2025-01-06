@@ -12,19 +12,81 @@
     <meta property="og:description" content="Make bingo grids quickly" />
   </head>
   <body>
-    <main id="app" style="display: none">
+    <div id="app" style="display: none">
+      <main>
+        <h1>🏭 Bingo Factory</h1>
+        <table class="config">
+          <tr>
+            <td>Ratio</td>
+            <td>
+              <select v-model="config.ratio">
+                <option value="1">square (1:1)</option>
+                <option value="1.414">portrait (1:1.414)</option>
+                <option value="0.707">landscape (1.414:1)</option>
+                <option value="1.25">phone (4:5)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Margin</td>
+            <td>
+              <select v-model="config.margin">
+                <option value="0.05">5%</option>
+                <option value="0.1">10%</option>
+                <option value="0.15">15%</option>
+                <option value="0.2">20%</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Grid</td>
+            <td>
+              <select v-model="config.grid">
+                <option value="3">3x3</option>
+                <option value="4">4x4</option>
+                <option value="5">5x5</option>
+                <option value="6">6x6</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Seed</td>
+            <td>
+              <div class="withButton">
+                <input v-model="config.seed" />
+                <button @click="newSeed">new</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>
+              <input v-model="config.title" />
+            </td>
+          </tr>
+          <tr>
+            <td>Color</td>
+            <td>
+              <div class="withButton">
+                <input v-model="config.color" />
+                <button @click="newColor">new</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <br />
+        <small
+          ><a href="https://github.com/clement-gouin" target="_blank"
+            >@clement-gouin</a
+          >
+          -
+          <a href="https://github.com/clement-gouin/bingo" target="_blank"
+            >Github Repository</a
+          >
+          - 2025</small
+        >
+      </main>
       <canvas width="400" height="400" ref="canvas"></canvas>
-      <br />
-      <small
-        ><a href="https://github.com/clement-gouin" target="_blank"
-          >@clement-gouin</a
-        >
-        -
-        <a href="https://github.com/clement-gouin/bingo" target="_blank"
-          >Github Repository</a
-        >
-        - 2025</small
-      >
-    </main>
+    </div>
   </body>
 </html>
