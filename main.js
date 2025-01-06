@@ -144,7 +144,7 @@ let app = {
       this.draw();
     },
     newSeed() {
-      this.config.seed = (100000000 * Math.random()).toFixed(0);
+      this.config.seed = utils.randomSeed();
       this.draw();
     },
     newColor() {
