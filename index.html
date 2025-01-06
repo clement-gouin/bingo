@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!-- TODO -->Change this you moron</title>
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bingo Factory</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script type="text/javascript" src="main.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- card related -->
-    <!--
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:title" content="">
-    <meta property="twitter:title" content="">
-    <meta property="og:description" content="">
-    <meta property="twitter:description" content="">
-    <meta property="og:image" content="https://.../preview_640x320.jpg">
-    <meta property="twitter:image" content="">
-    <meta property="org:url" content="https://...">
-    -->
-</head>
-<body>
-    <main id="app" style="display:none">
-        <h1>{{title}}</h1>
-        <br>
-        <p v-html="content"></p>
-        <br>
-        <small><a href="https://twitter.com/_klemek" target="_blank">@Klemek</a> - <a href="" target="_blank">Github Repository</a> - {{currentYear}}</small>
+    <meta property="og:title" content="Bingo Factory" />
+    <meta property="og:description" content="Make bingo grids quickly" />
+  </head>
+  <body>
+    <main id="app" style="display: none">
+      <canvas width="400" height="400" ref="canvas"></canvas>
+      <br />
+      <small
+        ><a href="https://github.com/clement-gouin" target="_blank"
+          >@clement-gouin</a
+        >
+        -
+        <a href="https://github.com/clement-gouin/bingo" target="_blank"
+          >Github Repository</a
+        >
+        - 2025</small
+      >
     </main>
-</body>
+  </body>
 </html>
