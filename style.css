@@ -125,6 +125,7 @@ body {
 main {
   padding: 1.5rem;
   background-color: var(--background-primary);
+  min-width: 24rem;
 }
 
 canvas {
@@ -192,4 +193,29 @@ a {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
+}
+
+main,
+canvas {
+  display: none;
+}
+
+#too_small {
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+@media only screen and ((min-width: 1152px) and (min-height: 726px)) {
+  main,
+  canvas {
+    display: block;
+  }
+
+  #too_small {
+    display: none;
+  }
 }
