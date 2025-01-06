@@ -125,14 +125,13 @@ let app = {
         title: "",
         color: utils.randomColor(),
       },
-      data: [],
+      data: "",
     };
   },
   computed: {},
   watch: {
     config: {
       handler() {
-        this.makeData();
         this.draw();
       },
       deep: true,
@@ -150,17 +149,6 @@ let app = {
     newColor() {
       this.config.color = utils.randomColor();
       this.draw();
-    },
-    makeData() {
-      const targetSize =
-        parseInt(this.config.grid) * parseInt(this.config.grid);
-      if (this.data.length > targetSize) {
-        this.data = this.data.slice(0, targetSize);
-      } else if (this.data.length < targetSize) {
-        this.data = this.data.concat(
-          Array(targetSize - this.data.length).fill("")
-        );
-      }
     },
     draw() {
       const ctx = this.$refs.canvas?.getContext("2d");
@@ -227,12 +215,28 @@ let app = {
         );
       }
 
-      if (this.data.length) {
-        const data = utils.shuffleSeeded(this.data, parseInt(this.config.seed));
+      if (this.data.trim().length) {
+        const rawData = this.data.trim().split("\n");
+
+        const targetSize =
+          parseInt(this.config.grid) * parseInt(this.config.grid);
+
+        const data = utils.shuffleSeeded(
+          rawData.concat(
+            Array(Math.max(0, targetSize - rawData.length)).fill("")
+          ),
+          parseInt(this.config.seed)
+        );
         const cellSize = gridSize / columns;
         const cellMargin = cellSize * 0.05;
 
-        for (let index = 0; index < data.length; index++) {
+        console.log(data.length);
+
+        for (
+          let index = 0;
+          index < Math.min(targetSize, data.length);
+          index++
+        ) {
           const element = data[index];
           if (element) {
             const x = index % columns;
@@ -262,7 +266,6 @@ let app = {
   },
   mounted: function () {
     console.log("app mounted");
-    this.makeData();
     setTimeout(this.showApp);
     addEventListener("resize", this.draw);
   },

@@ -75,12 +75,8 @@
           </tr>
         </table>
         <br />
-        <h3>Data (scroll to see all):</h3>
-        <div class="data">
-          <template v-for="line, index in data" :key="index">
-            <input v-model="data[index]" @input="draw" />
-          </template>
-        </div>
+        <h3>Data:</h3>
+        <textarea v-model="data" @input="draw"></textarea>
         <br />
         <small
           ><a href="https://github.com/clement-gouin" target="_blank"
@@ -93,7 +89,7 @@
           - 2025</small
         >
       </main>
-      <canvas width="400" height="400" ref="canvas"></canvas>
+      <canvas ref="canvas"></canvas>
       <h1 id="too_small">Window is too small</h1>
     </div>
   </body>

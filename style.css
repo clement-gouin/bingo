@@ -186,13 +186,9 @@ a {
   color: inherit;
 }
 
-.data {
+textarea {
   width: 100%;
-  border: 1px solid black;
-  max-height: 20rem;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
+  height: 20rem;
 }
 
 main,
